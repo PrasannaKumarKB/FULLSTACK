@@ -10,6 +10,15 @@ import { FormsModule, NgForm } from '@angular/forms';
       <div *ngIf="formError" class="error-notification">
         <p>{{ formError }}</p>
       </div>
+      <nav class="navbar">
+        <div class="navbar-left">
+          <span>Welcome, {{ username }}</span>
+        </div>
+        <div class="navbar-right">
+          <button class="icon-button" (click)="toggleTheme()" title="Toggle Dark Mode">🌙</button>
+          <button class="icon-button" (click)="toggleNotifications()" title="View Notifications">🔔</button>
+        </div>
+      </nav>
 
       <div class="registration-container">
         <h2>Internal Project Registration</h2>
@@ -82,6 +91,46 @@ import { FormsModule, NgForm } from '@angular/forms';
   styles: [`
     .body {
       background: linear-gradient(skyblue, pink);
+      display:grid;
+      justify-content:normal;
+    }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 90%;
+      padding: 15px 30px;
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      color: black;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      margin-top:40px;
+      margin-left:40px;
+    }
+
+    .navbar-left {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .navbar-right {
+      display: flex;
+      gap: 20px;
+    }
+
+    .icon-button {
+      background: transparent;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 24px;
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    .icon-button:hover {
+      color: #e0e0e0;
+      transform: scale(1.1);
     }
 
     .registration-container {
@@ -223,4 +272,14 @@ export class InternalRegistrationComponent implements OnInit {
       alert('Form submitted successfully!');
     }
   }
+  toggleTheme() {
+    document.body.classList.toggle('dark-mode');
+  }
+
+  toggleNotifications() {
+    this.showNotifications = !this.showNotifications; 
+  }
+  username: string = 'User'; // Placeholder for actual username
+  showNotifications: boolean = false;
+  notifications: string[] = ['Notification 1', 'Notification 2', 'Notification 3'];
 }

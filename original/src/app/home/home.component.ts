@@ -6,29 +6,28 @@ import { CommonModule } from '@angular/common';
   selector: 'app-home',
   standalone: true,
   template: `
+  <div class="body">
     <div class="container">
       <nav class="navbar">
         <div class="navbar-left">
           <span>Welcome, {{ username }}</span>
         </div>
         <div class="navbar-right">
-          <button class="icon-button" (click)="toggleTheme()">🌙</button>
-          <button class="icon-button" (click)="toggleNotifications()">🔔</button>
+          <button class="icon-button" (click)="toggleTheme()" title="Toggle Dark Mode">🌙</button>
+          <button class="icon-button" (click)="toggleNotifications()" title="View Notifications">🔔</button>
         </div>
       </nav>
 
       <main>
         <h2 class="project-title">Registration Portal</h2>
         <div class="options">
-          <div class="option-box">
-            <button (click)="openProjectChoiceModal()" class="option-link">
-              <h2>Registration Form</h2>
-            </button>
+          <div class="option-box" (click)="openProjectChoiceModal()">
+            <h2>Registration Form</h2>
+            <p>Fill out your project details</p>
           </div>
-          <div class="option-box">
-            <button (click)="goToStatus()" class="option-link">
-              <h2>Registration Status</h2>
-            </button>
+          <div class="option-box" (click)="goToStatus()">
+            <h2>Registration Status</h2>
+            <p>Check the status of your application</p>
           </div>
         </div>
       </main>
@@ -61,6 +60,7 @@ import { CommonModule } from '@angular/common';
         </div>
       </div>
     </div>
+    </div>
   `,
   styles: [`
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
@@ -69,10 +69,9 @@ import { CommonModule } from '@angular/common';
       font-family: 'Poppins', sans-serif;
       margin: 0;
       padding: 0;
-      background: #f4f7f9;
+      background: lightblue;
       color: #333;
       transition: background-color 0.3s, color 0.3s;
-      overflow: hidden;
     }
 
     body.dark-mode {
@@ -84,19 +83,20 @@ import { CommonModule } from '@angular/common';
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-height: 100vh;
       padding: 20px;
+      min-height:100vh;
+      background:lightblue;
     }
 
     .navbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      width: 100%;
+      width: 90%;
       padding: 15px 30px;
-      background-color: #0061f2;
+      background-color: white;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      color: white;
+      color: black;
       border-radius: 10px;
       margin-bottom: 30px;
     }
@@ -137,6 +137,7 @@ import { CommonModule } from '@angular/common';
       display: flex;
       justify-content: center;
       gap: 50px;
+      flex-wrap: wrap;
     }
 
     .option-box {
@@ -146,32 +147,32 @@ import { CommonModule } from '@angular/common';
       background: linear-gradient(145deg, #ffffff, #f4f7f9);
       box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       position: relative;
       overflow: hidden;
+      cursor: pointer;
+      padding: 20px;
+      text-align: center;
     }
 
     .option-box:hover {
       transform: translateY(-10px);
       box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.15);
+      background: linear-gradient()
     }
 
-    .option-link {
-      font-size: 20px;
+    .option-box h2 {
+      font-size: 24px;
       color: #00509e;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: color 0.3s ease;
+      margin: 0;
     }
 
-    .option-link:hover {
-      color: #003f7e;
+    .option-box p {
+      font-size: 16px;
+      color: #666;
     }
 
     .footer {
@@ -191,8 +192,9 @@ import { CommonModule } from '@angular/common';
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
+      background-color: rgba(0, 0, 0, 0.7);
       z-index: 1000;
+      overflow-y: auto;
     }
 
     .modal-content {
@@ -233,8 +235,7 @@ import { CommonModule } from '@angular/common';
       padding: 12px 20px;
       cursor: pointer;
       transition: background-color 0.3s ease, transform 0.2s ease;
-      width: 100%;
-      margin: 0 10px;
+      width: 48%;
       font-size: 16px;
       font-weight: 600;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);

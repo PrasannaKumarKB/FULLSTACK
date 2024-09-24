@@ -7,6 +7,15 @@ import { FormsModule, NgForm } from '@angular/forms';
   standalone: true,
   template: `
   <div class="body">
+  <nav class="navbar">
+        <div class="navbar-left">
+          <span>Welcome, {{ username }}</span>
+        </div>
+        <div class="navbar-right">
+          <button class="icon-button" (click)="toggleTheme()" title="Toggle Dark Mode">🌙</button>
+          <button class="icon-button" (click)="toggleNotifications()" title="View Notifications">🔔</button>
+        </div>
+      </nav>
     <div class="registration-container">
       <h2>External Project Registration</h2>
       <form #registrationForm="ngForm" (ngSubmit)="onSubmit(registrationForm)">
@@ -104,19 +113,61 @@ import { FormsModule, NgForm } from '@angular/forms';
   `,
   styles: [`
     .body {
-      background: linear-gradient(skyblue, pink);
+      background: lightblue;
+      font-family: 'Arial', sans-serif; /* Set a generic font-family for better compatibility */
+      display:grid;
+      justify-content:normal;
     }
-
+    
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 90%;
+      padding: 15px 30px;
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      color: black;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      margin-top:40px;
+      margin-left:40px;
+    }
+  
+    .navbar-left {
+      font-size: 20px;
+      font-weight: 600;
+    }
+  
+    .navbar-right {
+      display: flex;
+      gap: 20px;
+    }
+  
+    .icon-button {
+      background: transparent;
+      border: none;
+      color: black; /* Change color for visibility on white background */
+      cursor: pointer;
+      font-size: 24px;
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+  
+    .icon-button:hover {
+      color: #3498db; /* Change hover color for visibility */
+      transform: scale(1.1);
+    }
+  
     .registration-container {
       max-width: 800px;
       margin: 40px auto;
       padding: 30px;
       border-radius: 20px;
+      min-height:100vh;
       background: linear-gradient(145deg, #ffffff, #f0f0f0);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      font-family: 'timesnewroman';
     }
-
+  
     h2 {
       text-align: center;
       font-size: 2em;
@@ -125,11 +176,11 @@ import { FormsModule, NgForm } from '@angular/forms';
       text-transform: uppercase;
       letter-spacing: 1.5px;
     }
-
+  
     .form-group {
       margin-bottom: 20px;
     }
-
+  
     label {
       display: block;
       margin-bottom: 8px;
@@ -137,7 +188,7 @@ import { FormsModule, NgForm } from '@angular/forms';
       font-weight: 600;
       color: #34495e;
     }
-
+  
     input, select {
       width: 90%;
       padding: 12px;
@@ -147,18 +198,18 @@ import { FormsModule, NgForm } from '@angular/forms';
       background-color: #f9f9f9;
       transition: border-color 0.3s, background-color 0.3s;
     }
-
+  
     input:focus, select:focus {
       border-color: #3498db;
       background-color: #fff;
     }
-
+  
     .validation-error {
       color: red;
       font-size: 0.9em;
       margin-top: 5px;
     }
-
+  
     .submit-button {
       width: 100%;
       padding: 15px;
@@ -170,47 +221,12 @@ import { FormsModule, NgForm } from '@angular/forms';
       cursor: pointer;
       transition: background-color 0.3s, transform 0.3s;
     }
-
+  
     .submit-button:disabled {
       background-color: #bdc3c7;
     }
-
-    /* Error Notification */
-    .error-notification {
-      position: fixed;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80%;
-      max-width: 600px;
-      padding: 15px;
-      background: linear-gradient(135deg, #e74c3c, #e67e22);
-      color: white;
-      text-align: center;
-      font-size: 18px;
-      font-weight: bold;
-      border-radius: 8px;
-      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-      z-index: 1000;
-      animation: slideDown 0.5s ease-out, fadeOut 0.5s ease-in 4.5s forwards;
-      opacity: 1;
-    }
-
-    @keyframes slideDown {
-      from {
-        transform: translateY(-100%) translateX(-50%);
-      }
-      to {
-        transform: translateY(0) translateX(-50%);
-      }
-    }
-
-    @keyframes fadeOut {
-      to {
-        opacity: 0;
-      }
-    }
   `],
+  
   imports: [CommonModule, FormsModule]
 })
 export class ExternalRegistrationComponent implements OnInit {
@@ -250,4 +266,14 @@ export class ExternalRegistrationComponent implements OnInit {
       alert('Form submitted successfully!');
     }
   }
+  toggleTheme() {
+    document.body.classList.toggle('dark-mode');
+  }
+
+  toggleNotifications() {
+    this.showNotifications = !this.showNotifications; 
+  }
+  username: string = 'User'; // Placeholder for actual username
+  showNotifications: boolean = false;
+  notifications: string[] = ['Notification 1', 'Notification 2', 'Notification 3'];
 }
