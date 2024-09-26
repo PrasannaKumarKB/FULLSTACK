@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIT MAIL MANAGER - Login</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f7f9fc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #007bff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        label {
+            text-align: left;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            display: block;
+            color: #555;
+        }
+
+        input {
+            padding: 0.75rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            width: 100%;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .google-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #db4437;
+            color: white;
+            padding: 0.75rem;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 10px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        .google-btn:hover {
+            background-color: #c13527;
+        }
+
+        .login-form {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-box">
+            <h2>Login</h2>
+            <form action="/login" method="post">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+
+                <button type="submit" class="btn">Sign In</button>
+
+                <div class="login-form">
+                    <a href="/auth/google" class="google-btn">
+                        <span class="btn-text"><b>Sign in with Google</b></span>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const express = require('express');
+const app = express();
+const path = require('path');
+const passport = require('passport');
+const collection = require("./src/mongodb");  
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const session = require('express-session');
+const bodyParser = require('body-parser');
+require('dotenv').config();
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+
+app.use(session({
+  secret: process.env.GOOGLE_CLIENT_SECRET,
+  resave: false,
+  saveUninitialized: true,
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: 'http://localhost:4200/auth/google/callback',
+},
+(accessToken, refreshToken, profile, done) => {
+    if (profile.emails[0].value === 'samplebit7@gmail.com') {
+        return done(null, profile);
+    }
+    return done(null, false, { message: 'Unauthorized email' });
+}));
+
+app.get('/', (req, res) => {
+  res.render('index'); 
+});
+
+app.post("/login", async (req, res) => {
+  try {
+  
+    const check = await collection.findOne({ 
+      $or: [{ name: req.body.name }, { name: req.body.email }] 
+    });
+
+    if (check && check.password === req.body.password) {
+      req.session.user = check; 
+      res.redirect('/dashboard');
+    } else {
+      res.send("Wrong Password or User does not exist");
+    }
+  } catch (error) {
+    res.send("Error occurred during login");
+  }
+});
+
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/' }),
+  (req, res) => {
+    res.redirect('/dashboard');
+  }
+);
+
+app.get('/dashboard', (req, res) => {
+  if (!req.isAuthenticated() && !req.session.user) {
+    return res.redirect('/');
+  }
+  const user = req.isAuthenticated() ? req.user : req.session.user;  
+  res.render('dashboard', { user });
+});
+
+app.get('/logout', (req, res, next) => {
+  req.logout(err => {
+    if (err) { return next(err); }
+    req.session.destroy();
+    res.redirect('/');
+  });
+});
+
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
+
+    </script>
+</body>
+</html>

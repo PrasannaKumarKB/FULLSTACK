@@ -6,6 +6,9 @@ import { HomeComponent } from './home/home.component';
 import { ExternalRegistrationComponent } from './externalregistration.component'; // Update with the correct path
 import { FacultyComponent } from './faculty.component';
 
+
+
+
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'register', component: RegistrationFormComponent,  },
@@ -13,5 +16,13 @@ export const routes: Routes = [
   { path: 'internal', component: InternalRegistrationComponent,  },
   { path: 'external', component: ExternalRegistrationComponent, }, // Add this line
   { path: 'faculty', component:FacultyComponent, },
-  { path: '**', redirectTo: '', pathMatch: 'full' }
+  { path: '**', redirectTo: '', pathMatch: 'full' },
+  { path: '', redirectTo: '/google-signin', pathMatch: 'full' }
 ];
+
+
+
+
+
+
+export default routes;  // Or export as named export

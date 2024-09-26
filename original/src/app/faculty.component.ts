@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `
     <div class="faculty-container">
+    
       <nav class="navbar">
         <div class="navbar-left">
           <span>Welcome, {{ username }}</span>
@@ -18,6 +19,9 @@ import { CommonModule } from '@angular/common';
       </nav>
 
       <h2 class="faculty-title">Project Submissions</h2>
+      <div class="notification" *ngIf="notification" [ngClass]="{ 'approved': notification === 'Project Approved', 'rejected': notification === 'Project Rejected' }">
+        {{ notification }}
+      </div>
 
       <!-- Project cards with extra sections on the sides -->
       <div class="project-card" *ngFor="let project of projects">
@@ -59,7 +63,6 @@ import { CommonModule } from '@angular/common';
             </div>
           </div>
 
-          <div class="extra"></div> <!-- Right extra section inside card -->
         </div>
 
         <div class="action-buttons" *ngIf="!project.status">
@@ -74,9 +77,7 @@ import { CommonModule } from '@angular/common';
         </div>
       </div>
 
-      <div class="notification" *ngIf="notification" [ngClass]="{ 'approved': notification === 'Project Approved', 'rejected': notification === 'Project Rejected' }">
-        {{ notification }}
-      </div>
+      
     </div>
   `,
   styles: [`
@@ -155,8 +156,11 @@ import { CommonModule } from '@angular/common';
     }
 
     .extra {
-      background-color: black;
-      height: 300px;
+      background: url('/logo.png');
+      background-size: 80% 80%; /* Adjust as needed */
+      background-repeat: no-repeat; /* Adjust as needed */   
+      margin-top:30px;   
+      margin-left:20px;
       border-radius:10px;
     }
 
@@ -164,6 +168,7 @@ import { CommonModule } from '@angular/common';
       display: flex;
       flex-direction: column;
       gap: 8px;
+      margin-left:100px;
     }
 
     .detail-item {
@@ -190,6 +195,7 @@ import { CommonModule } from '@angular/common';
     .approve-btn {
       background-color: #28a745;
       color: white;
+      margin-left:50%;
     }
 
     .approve-btn:hover {
@@ -223,6 +229,7 @@ import { CommonModule } from '@angular/common';
 
     .notification {
       margin-top: 20px;
+      background:white;
       padding: 10px;
       border-radius: 8px;
       font-size: 18px;
