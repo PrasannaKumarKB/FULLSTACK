@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
-declare const gapi: any;
+import { AuthService } from '../auth.service'; // Import the AuthService
 
 @Component({
   selector: 'app-home',
@@ -12,7 +11,7 @@ declare const gapi: any;
       <div class="container">
         <nav class="navbar">
           <div class="navbar-left">
-            <span>Welcome, {{ username }}</span>
+            <span>Welcome, {{ userName }}!</span> <!-- Updated to use userName from AuthService -->
           </div>
           <div class="navbar-right">
             <button class="icon-button" (click)="toggleTheme()" title="Toggle Dark Mode">🌙</button>
@@ -163,7 +162,6 @@ declare const gapi: any;
     .option-box:hover {
       transform: translateY(-10px);
       box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.15);
-      background: linear-gradient()
     }
 
     .option-box h2 {
@@ -250,15 +248,18 @@ declare const gapi: any;
   `],
   imports: [CommonModule]
 })
-export class HomeComponent {
-  username: string = 'User';
+export class HomeComponent implements OnInit {
+  userName: string = '';
+
   showNotifications: boolean = false;
   notifications: string[] = ['Notification 1', 'Notification 2', 'Notification 3'];
   showProjectChoice: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
-  
+  ngOnInit(): void {
+    this.userName = this.authService.getUserName(); // Fetch the user's name from AuthService
+  }
 
   openProjectChoiceModal() {
     this.showProjectChoice = true;

@@ -2,27 +2,26 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { AuthService } from '../auth.service'; // Import the AuthService
 
-// Declare gapi as a global variable
 declare var gapi: any;
 
 @Component({
   selector: 'app-google-signin',
   standalone: true,
   template: `
-  <div class="signin-container">
-  <div class="signin-card">
-    <h2>Welcome Back!</h2>
-    <img src="logo.png" alt="BIT Logo" class="logo" />
-    <h3>BANNARI AMMAN INSTITUTE OF TECHNOLOGY</h3>
-    <p class="tagline">Stay Ahead</p>
-    <h4>BIT Project Registration Portal</h4>
-    <hr class="divider" />
-    <button (click)="handleAuthClick()" class="g-signin-button">Google Sign In</button>
-    <p class="signin-note">Sign in with your BIT account</p>
-  </div>
-</div>
-
+    <div class="signin-container">
+      <div class="signin-card">
+        <h2>Welcome Back!</h2>
+        <img src="logo.png" alt="BIT Logo" class="logo" />
+        <h3>BANNARI AMMAN INSTITUTE OF TECHNOLOGY</h3>
+        <p class="tagline">Stay Ahead</p>
+        <h4>BIT Project Registration Portal</h4>
+        <hr class="divider" />
+        <button (click)="handleAuthClick()" class="g-signin-button">Google Sign In</button>
+        <p class="signin-note">Sign in with your BIT account</p>
+      </div>
+    </div>
   `,
   styles: [`
     .signin-container {
@@ -105,12 +104,14 @@ export class GoogleSigninComponent implements OnInit {
 
   clientId: string = '9132803845-lfhammfdo0tt46l8dgvusjtk2modck3p.apps.googleusercontent.com'; // replace with your client ID
 
-  constructor(private router: Router, @Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private authService: AuthService // Inject the AuthService
+  ) {}
 
   ngOnInit(): void {
-    // Ensure this code runs only in the browser environment
     if (isPlatformBrowser(this.platformId)) {
-      // Dynamically import gapi-script
       import('gapi-script').then(({ loadGapiInsideDOM }) => {
         loadGapiInsideDOM().then(() => {
           gapi.load('auth2', () => {
@@ -130,20 +131,17 @@ export class GoogleSigninComponent implements OnInit {
   }
 
   handleAuthClick() {
-    // Ensure this code runs only in the browser environment
     if (isPlatformBrowser(this.platformId)) {
       const auth2 = gapi.auth2.getAuthInstance();
       if (auth2) {
         auth2.signIn().then((googleUser: any) => {
           const profile = googleUser.getBasicProfile();
           const email = profile.getEmail();
+          const name = profile.getName(); // Get the user's name
           const domain = email.split('@')[1];
-  
-          // Restrict to 'bitsathy.ac.in' domain
+
           if (domain === 'bitsathy.ac.in') {
-            // Store user data, navigate to home, etc.
-            console.log('Signed in successfully with email:', email);
-            // Use Angular's Router to navigate after successful sign-in
+            this.authService.setUserName(name); // Store the user's name in the AuthService
             this.router.navigateByUrl('/home').then(navigationSuccess => {
               if (navigationSuccess) {
                 console.log('Navigation to /home was successful!');
@@ -162,5 +160,4 @@ export class GoogleSigninComponent implements OnInit {
       }
     }
   }
-  
-}  
+}
