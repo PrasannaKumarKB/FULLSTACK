@@ -1,65 +1,67 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+
+declare const gapi: any;
 
 @Component({
   selector: 'app-home',
   standalone: true,
   template: `
-  <div class="body">
-    <div class="container">
-      <nav class="navbar">
-        <div class="navbar-left">
-          <span>Welcome, {{ username }}</span>
-        </div>
-        <div class="navbar-right">
-          <button class="icon-button" (click)="toggleTheme()" title="Toggle Dark Mode">🌙</button>
-          <button class="icon-button" (click)="toggleNotifications()" title="View Notifications">🔔</button>
-        </div>
-      </nav>
-
-      <main>
-        <h2 class="project-title">Registration Portal</h2>
-        <div class="options">
-          <div class="option-box" (click)="openProjectChoiceModal()">
-            <h2>Registration Form</h2>
-            <p>Fill out your project details</p>
+    <div class="body">
+      <div class="container">
+        <nav class="navbar">
+          <div class="navbar-left">
+            <span>Welcome, {{ username }}</span>
           </div>
-          <div class="option-box" (click)="goToStatus()">
-            <h2>Registration Status</h2>
-            <p>Check the status of your application</p>
+          <div class="navbar-right">
+            <button class="icon-button" (click)="toggleTheme()" title="Toggle Dark Mode">🌙</button>
+            <button class="icon-button" (click)="toggleNotifications()" title="View Notifications">🔔</button>
+          </div>
+        </nav>
+        
+        <main>
+          <h2 class="project-title">Registration Portal</h2>
+          <div class="options">
+            <div class="option-box" (click)="openProjectChoiceModal()">
+              <h2>Registration Form</h2>
+              <p>Fill out your project details</p>
+            </div>
+            <div class="option-box" (click)="goToStatus()">
+              <h2>Registration Status</h2>
+              <p>Check the status of your application</p>
+            </div>
+          </div>
+        </main>
+        
+        <footer class="footer">
+          <p>© Bannari Amman Institute of Technology, 2024. All Rights Reserved.</p>
+        </footer>
+        
+        <!-- Notifications Modal -->
+        <div class="modal" *ngIf="showNotifications">
+          <div class="modal-content">
+            <span (click)="toggleNotifications()" class="close-button">&times;</span>
+            <h3>Notifications</h3>
+            <ul>
+              <li *ngFor="let notification of notifications">{{ notification }}</li>
+            </ul>
           </div>
         </div>
-      </main>
 
-      <footer class="footer">
-        <p>© Bannari Amman Institute of Technology, 2024. All Rights Reserved.</p>
-      </footer>
-
-      <!-- Notifications Modal -->
-      <div class="modal" *ngIf="showNotifications">
-        <div class="modal-content">
-          <span (click)="toggleNotifications()" class="close-button">&times;</span>
-          <h3>Notifications</h3>
-          <ul>
-            <li *ngFor="let notification of notifications">{{ notification }}</li>
-          </ul>
+        <!-- Project Choice Modal -->
+        <div class="modal" *ngIf="showProjectChoice">
+          <div class="modal-content">
+            <span (click)="closeProjectChoiceModal()" class="close-button">&times;</span>
+            <h3>Select Project Type</h3>
+            <p>Are you choosing an Internal or External Project?</p>
+            <div class="button-group">
+              <button (click)="navigateToInternal()" class="project-button">Internal Project</button>
+              <button (click)="navigateToExternal()" class="project-button">External Project</button>
+            </div>
+          </div>
         </div>
       </div>
-
-      <!-- Project Choice Modal -->
-      <div class="modal" *ngIf="showProjectChoice">
-        <div class="modal-content">
-          <span (click)="closeProjectChoiceModal()" class="close-button">&times;</span>
-          <h3>Select Project Type</h3>
-          <p>Are you choosing an Internal or External Project?</p>
-          <div class="button-group">
-            <button (click)="navigateToInternal()" class="project-button">Internal Project</button>
-            <button (click)="navigateToExternal()" class="project-button">External Project</button>
-          </div>
-        </div>
-      </div>
-    </div>
     </div>
   `,
   styles: [`
@@ -249,19 +251,21 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule]
 })
 export class HomeComponent {
-  username: string = 'User'; // Placeholder for actual username
+  username: string = 'User';
   showNotifications: boolean = false;
   notifications: string[] = ['Notification 1', 'Notification 2', 'Notification 3'];
   showProjectChoice: boolean = false;
 
   constructor(private router: Router) {}
 
+  
+
   openProjectChoiceModal() {
-    this.showProjectChoice = true; 
+    this.showProjectChoice = true;
   }
 
   closeProjectChoiceModal() {
-    this.showProjectChoice = false; 
+    this.showProjectChoice = false;
   }
 
   navigateToInternal() {
@@ -283,6 +287,6 @@ export class HomeComponent {
   }
 
   toggleNotifications() {
-    this.showNotifications = !this.showNotifications; 
+    this.showNotifications = !this.showNotifications;
   }
 }
